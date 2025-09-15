@@ -2,6 +2,7 @@ package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -45,4 +46,16 @@ public class Member extends BaseEntity{
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "collection_id", unique = true,  nullable = false, insertable = false)
     private Collection collection;
+
+    @Builder
+    public Member(String name, int year, String loginId, String password,  String phoneNumber) {
+        this.name = name;
+        this.year = year;
+        this.loginId = loginId;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        this.coin = 0;
+        this.attendedDays = 0;
+        this.premium = false;
+    }
 }
