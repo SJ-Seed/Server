@@ -43,6 +43,6 @@ public class Member extends BaseEntity{
     private boolean premium;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "book_id", unique = true,  nullable = false, insertable = false)
-    private Book book;
+    @JoinColumn(name = "collection_id", unique = true,  nullable = false, insertable = false)
+    private Collection collection;
 }

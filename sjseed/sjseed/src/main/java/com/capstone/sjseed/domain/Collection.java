@@ -9,8 +9,8 @@ import org.hibernate.annotations.ColumnDefault;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "book")
-public class Book extends BaseEntity{
+@Table(name = "collection")
+public class Collection extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
