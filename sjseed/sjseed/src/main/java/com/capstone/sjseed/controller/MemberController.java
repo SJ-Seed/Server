@@ -1,6 +1,8 @@
 package com.capstone.sjseed.controller;
 
-import com.capstone.sjseed.domain.Member;
+import com.capstone.sjseed.apiPayload.ApiResponse;
+import com.capstone.sjseed.dto.SignupRequestDto;
+import com.capstone.sjseed.dto.SignupResponseDto;
 import com.capstone.sjseed.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +18,8 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @PostMapping("/signUp")
-    public ResponseEntity<Member> signUp(@RequestBody Member member) {
-        try {
-
-        }
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponse<SignupResponseDto>> signUp(@RequestBody SignupRequestDto signupDto) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.signUp(signupDto)));
     }
 }

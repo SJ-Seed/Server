@@ -1,7 +1,12 @@
 package com.capstone.sjseed.service;
 
+import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
+import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
+import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
-import com.capstone.sjseed.apiPayload.exception.DuplicateLoginException;
+import com.capstone.sjseed.dto.SignupRequestDto;
+import com.capstone.sjseed.dto.SignupResponseDto;
+import com.capstone.sjseed.repository.CollectionRepository;
 import com.capstone.sjseed.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,21 +21,27 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public Long signUp(String name, int year, String loginId, String password, String phoneNumber) {
-        if (memberRepository.existsByLoginId(loginId)) {
-            throw new DuplicateLoginException(loginId);
+    public SignupResponseDto signUp(SignupRequestDto signupDto) {
+        if (memberRepository.existsByLoginId(signupDto.loginId())) {
+            throw new MemberHandler(ErrorStatus.DUPLICATED_ID);
         }
 
-        String encodedPassword = passwordEncoder.encode(password);
+        String encodedPassword = passwordEncoder.encode(signupDto.password());
+        Collection collection = Collection.builder().build();
 
         Member member = Member.builder()
-                .name(name)
-                .year(year)
-                .loginId(loginId)
+                .name(signupDto.name())
+                .year(signupDto.year())
+                .loginId(signupDto.loginId())
                 .password(encodedPassword)
-                .phoneNumber(phoneNumber)
+                .phoneNumber(signupDto.phoneNumber())
+                .collection(collection)
                 .build();
 
-        return memberRepository.save(member).getId();
+        memberRepository.save(member);
+
+        return SignupResponseDto.of(
+                member.getName(), member.getYear(), member.getLoginId(), member.getPassword(), member.getPhoneNumber()
+        );
     }
 }

@@ -43,12 +43,12 @@ public class Member extends BaseEntity{
     @ColumnDefault("false")
     private boolean premium;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "collection_id", unique = true,  nullable = false, insertable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @JoinColumn(name = "collection_id", unique = true,  nullable = false)
     private Collection collection;
 
     @Builder
-    public Member(String name, int year, String loginId, String password,  String phoneNumber) {
+    public Member(String name, int year, String loginId, String password, String phoneNumber, Collection collection) {
         this.name = name;
         this.year = year;
         this.loginId = loginId;
@@ -57,5 +57,6 @@ public class Member extends BaseEntity{
         this.coin = 0;
         this.attendedDays = 0;
         this.premium = false;
+        this.collection = collection;
     }
 }

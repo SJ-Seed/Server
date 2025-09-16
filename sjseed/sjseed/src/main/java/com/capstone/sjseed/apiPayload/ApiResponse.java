@@ -1,5 +1,7 @@
 package com.capstone.sjseed.apiPayload;
 
+import com.capstone.sjseed.apiPayload.form.BaseCode;
+import com.capstone.sjseed.apiPayload.form.status.SuccessStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -20,6 +22,14 @@ public class ApiResponse<T> {
     private final T result;
 
     public static <T> ApiResponse<T> onSuccess(T result) {
-        return new ApiResponse<>(true, SuccessStatus._OK.getCode())
+        return new ApiResponse<>(true, SuccessStatus._OK.getCode(), SuccessStatus._OK.getMessage(), result);
+    }
+
+    public static <T> ApiResponse<T> of(BaseCode code, T result) {
+        return new ApiResponse<>(true, code.getReasonHttpStatus().getCode(), code.getReasonHttpStatus().getMessage(), result);
+    }
+
+    public static <T> ApiResponse<T> onFailure(String code, T result, String message) {
+        return new ApiResponse<>(false, code, message, result);
     }
 }
