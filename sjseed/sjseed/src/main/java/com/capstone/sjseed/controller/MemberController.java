@@ -2,6 +2,7 @@ package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
 import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.dto.AttendDto;
 import com.capstone.sjseed.dto.PlantMainDto;
 import com.capstone.sjseed.dto.SignupRequestDto;
 import com.capstone.sjseed.dto.SignupResponseDto;
@@ -43,4 +44,12 @@ public class MemberController {
     public ResponseEntity<ApiResponse<Boolean[]>>  getAttendance(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getAttendedDays(memberId)));
     }
+
+    @Operation(summary = "출석", description = "이번주 출석 현황을 갱신하고, 오늘 첫 출석 시 50 코인을 지급합니다.")
+    @PatchMapping("/attend/{memberId}")
+    public ResponseEntity<ApiResponse<AttendDto>> attend(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.attend(memberId)));
+    }
+
+
 }
