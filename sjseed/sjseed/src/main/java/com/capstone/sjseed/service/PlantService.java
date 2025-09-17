@@ -1,0 +1,35 @@
+package com.capstone.sjseed.service;
+
+import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
+import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
+import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.domain.PlantSpecies;
+import com.capstone.sjseed.dto.PlantDetailDto;
+import com.capstone.sjseed.repository.PlantRepository;
+import com.capstone.sjseed.repository.PlantSpeciesRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@RequiredArgsConstructor
+public class PlantService {
+
+    private final PlantRepository plantRepository;
+    private final PlantSpeciesRepository  plantSpeciesRepository;
+
+    @Transactional(readOnly = true)
+    public PlantDetailDto getPlantDetail(Long plantId) {
+        Plant plant = plantRepository.findById(plantId).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND, plantId)
+        );
+
+        PlantSpecies species = plantSpeciesRepository.findById(plant.getSpecies().getId()).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, plant.getSpecies().getId())
+        );
+
+        return PlantDetailDto.of(
+                plant.getName(), species.getName(), plant.getBroughtDate(), species.getDescription(), species.getProperTemp(),
+                species.getProperHum(), species.getProperSoil(), species.getPeriod());
+    }
+}
