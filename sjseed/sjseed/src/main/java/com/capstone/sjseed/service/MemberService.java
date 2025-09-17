@@ -73,4 +73,15 @@ public class MemberService {
                         plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater())
         ).collect(Collectors.toList());
     }
+
+    @Transactional(readOnly = true)
+    public Boolean[] getAttendedDays(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        return member.getAttendedDays().chars()
+                .mapToObj(c -> c == '1')
+                .toArray(Boolean[]::new);
+    }
 }

@@ -37,4 +37,10 @@ public class MemberController {
     public ResponseEntity<ApiResponse<List<PlantMainDto>>> getPlants(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getPlantList(memberId)));
     }
+
+    @Operation(summary = "사용자의 출석일 조회", description = "사용자의 이번주 출석일을 조회합니다.")
+    @GetMapping("/attend/{memberId}")
+    public ResponseEntity<ApiResponse<Boolean[]>>  getAttendance(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getAttendedDays(memberId)));
+    }
 }

@@ -39,8 +39,8 @@ public class Member extends BaseEntity{
     private int coin;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private int attendedDays;
+    @ColumnDefault("'0000000'")
+    private String attendedDays;
 
     @Column(nullable = false)
     @ColumnDefault("false")
@@ -58,7 +58,7 @@ public class Member extends BaseEntity{
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.coin = 0;
-        this.attendedDays = 0;
+        this.attendedDays = "0000000";
         this.premium = false;
         this.collection = collection;
     }
