@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Table(name = "collection")
@@ -23,4 +26,7 @@ public class Collection extends BaseEntity{
     public Collection() {
 
     }
+
+    @OneToMany(fetch = FetchType.LAZY)
+    private List<Piece> pieces = new ArrayList<>();
 }

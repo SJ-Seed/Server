@@ -4,6 +4,7 @@ import com.capstone.sjseed.apiPayload.ApiResponse;
 import com.capstone.sjseed.dto.SignupRequestDto;
 import com.capstone.sjseed.dto.SignupResponseDto;
 import com.capstone.sjseed.service.MemberService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +19,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @Operation(summary = "회원가입", description = "회원가입을 합니다.")
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponseDto>> signUp(@RequestBody SignupRequestDto signupDto) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.signUp(signupDto)));
