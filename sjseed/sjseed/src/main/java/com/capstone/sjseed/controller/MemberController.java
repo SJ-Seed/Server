@@ -1,6 +1,8 @@
 package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
+import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.dto.PlantMainDto;
 import com.capstone.sjseed.dto.SignupRequestDto;
 import com.capstone.sjseed.dto.SignupResponseDto;
 import com.capstone.sjseed.service.MemberService;
@@ -8,6 +10,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/member")
@@ -22,9 +26,15 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.signUp(signupDto)));
     }
 
-    @Operation(summary = "코인 개수 조회", description = "멤버의 코인 개수를 조회합니다.")
+    @Operation(summary = "코인 개수 조회", description = "사용자의 코인 개수를 조회합니다.")
     @GetMapping("/coin/{memberId}")
     public ResponseEntity<ApiResponse<Integer>> getCoin(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getCoin(memberId)));
+    }
+
+    @Operation(summary = "사용자의 식물 리스트 조회", description = "사용자의 식물 리스트를 조회합니다.")
+    @GetMapping("/plants/{memberId}")
+    public ResponseEntity<ApiResponse<List<PlantMainDto>>> getPlants(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getPlantList(memberId)));
     }
 }
