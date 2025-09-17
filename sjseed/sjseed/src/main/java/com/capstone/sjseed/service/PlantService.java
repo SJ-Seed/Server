@@ -11,6 +11,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
+
 @Service
 @RequiredArgsConstructor
 public class PlantService {
@@ -31,5 +35,24 @@ public class PlantService {
         return PlantDetailDto.of(
                 plant.getName(), species.getName(), plant.getBroughtDate(), species.getDescription(), species.getProperTemp(),
                 species.getProperHum(), species.getProperSoil(), species.getPeriod());
+    }
+
+    @Transactional(readOnly = true)
+    public boolean ifNeedWater(Long plantId) {
+        Plant plant = plantRepository.findById(plantId).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND, plantId)
+        );
+
+        PlantSpecies species = plantSpeciesRepository.findById(plant.getSpecies().getId()).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, plant.getSpecies().getId())
+        );
+
+        LocalDate wateredDate = plant.getWateredDate().toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        long daySinceWatered = ChronoUnit.DAYS.between(wateredDate, LocalDate.now());
+
+        return daySinceWatered >= species.getPeriod();
     }
 }

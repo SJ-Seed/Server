@@ -17,4 +17,9 @@ public class PlantController {
     public ResponseEntity<ApiResponse<PlantDetailDto>> getPlantDetail(@PathVariable Long plantId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(plantService.getPlantDetail(plantId)));
     }
+
+    @GetMapping("/ifNeedWater/{plantId}")
+    public ResponseEntity<ApiResponse<Boolean>> ifNeedWater(@PathVariable Long plantId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(plantService.ifNeedWater(plantId)));
+    }
 }
