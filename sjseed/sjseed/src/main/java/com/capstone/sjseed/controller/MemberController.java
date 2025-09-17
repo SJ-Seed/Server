@@ -7,10 +7,7 @@ import com.capstone.sjseed.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/member")
@@ -23,5 +20,11 @@ public class MemberController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<SignupResponseDto>> signUp(@RequestBody SignupRequestDto signupDto) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.signUp(signupDto)));
+    }
+
+    @Operation(summary = "코인 개수 조회", description = "멤버의 코인 개수를 조회합니다.")
+    @GetMapping("/coin/{memberId}")
+    public ResponseEntity<ApiResponse<Integer>> getCoin(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getCoin(memberId)));
     }
 }

@@ -44,4 +44,12 @@ public class MemberService {
                 member.getName(), member.getYear(), member.getLoginId(), member.getPassword(), member.getPhoneNumber()
         );
     }
+
+    public int getCoin(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        return member.getCoin();
+    }
 }
