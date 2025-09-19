@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class PlantDataService {
 
     private final PlantDataRepository plantDataRepository;
-    private final WebClient webClient = WebClient.create("http://localhost:8080"); // TODO: 배포 시 서버 URL로 변경 필수
+    private final WebClient webClient = WebClient.create("https://sj-seed.com"); // TODO: 배포 시 서버 URL로 변경 필수
 
     public void save(PlantData plantData){
         plantDataRepository.save(plantData);
