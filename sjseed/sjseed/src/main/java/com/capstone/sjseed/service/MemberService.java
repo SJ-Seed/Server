@@ -4,14 +4,23 @@ import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
+import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.dto.AttendDto;
+import com.capstone.sjseed.dto.PlantMainDto;
 import com.capstone.sjseed.dto.SignupRequestDto;
 import com.capstone.sjseed.dto.SignupResponseDto;
 import com.capstone.sjseed.repository.CollectionRepository;
 import com.capstone.sjseed.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +52,62 @@ public class MemberService {
         return SignupResponseDto.of(
                 member.getName(), member.getYear(), member.getLoginId(), member.getPassword(), member.getPhoneNumber()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public int getCoin(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        return member.getCoin();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PlantMainDto> getPlantList(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        List<Plant> plants = member.getPlants();
+
+        return plants.stream().map(
+                plant -> PlantMainDto.of(
+                        plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater())
+        ).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public Boolean[] getAttendedDays(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        return member.getAttendedDays().chars()
+                .mapToObj(c -> c == '1')
+                .toArray(Boolean[]::new);
+    }
+
+    @Transactional
+    public AttendDto attend(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        LocalDate today = LocalDate.now();
+        int previousCoin = member.getCoin();
+
+        if (!today.equals(member.getLastAttendDate())) {
+            member.setLastAttendDate(today);
+            member.setCoin(member.getCoin() + 50); // 출석 코인 지급
+            int day = LocalDate.now().getDayOfWeek().getValue() - 1;
+            if (day == 0) member.initializeAttendedDays(); // 월요일이면 그 주 출석 초기화
+            Boolean[] attendedDays = getAttendedDays(memberId);
+            attendedDays[LocalDate.now().getDayOfWeek().getValue() - 1] = true; // 오늘 요일 출석으로 변경
+            memberRepository.save(member);
+        }
+        Boolean[] attendedDays = getAttendedDays(memberId);
+
+        return AttendDto.of(attendedDays, member.getCoin() - previousCoin, member.getCoin());
     }
 }

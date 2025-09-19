@@ -1,11 +1,13 @@
 package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,11 +35,16 @@ public class Member extends BaseEntity{
 
     @Column(nullable = false)
     @ColumnDefault("0")
+    @Setter
     private int coin;
 
     @Column(nullable = false)
-    @ColumnDefault("0")
-    private int attendedDays;
+    @ColumnDefault("'0000000'")
+    private String attendedDays;
+
+    @Column(nullable = false)
+    @Setter
+    private LocalDate lastAttendDate = LocalDate.now();
 
     @Column(nullable = false)
     @ColumnDefault("false")
@@ -55,8 +62,19 @@ public class Member extends BaseEntity{
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.coin = 0;
-        this.attendedDays = 0;
+        this.attendedDays = "0000000";
+        this.lastAttendDate = LocalDate.now();
         this.premium = false;
         this.collection = collection;
+    }
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Plant> plants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Treatment> treatments = new ArrayList<>();
+
+    public void initializeAttendedDays() {
+        this.attendedDays = "0000000";
     }
 }
