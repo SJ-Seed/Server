@@ -15,5 +15,7 @@ public class PlantData extends BaseEntity{
 
     private String temperature;
     private String humidity;
-    private String water;
+    private String soilWater;
+
+    private int plantId;
 }
