@@ -20,7 +20,7 @@ public class DataController {
     @PostMapping("/get")
     public String getPlantData(@RequestBody PlantData plantData) {
         plantDataService.save(plantData);
-        log.info("temp={} hum={} water={}", plantData.getTemperature(), plantData.getHumidity(), plantData.getSoilWater());
+        log.info("id={} temp={} hum={} water={}", plantData.getPlantId(), plantData.getTemperature(), plantData.getHumidity(), plantData.getSoilWater());
         return "";
     }
 }
