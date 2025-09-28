@@ -2,10 +2,7 @@ package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
 import com.capstone.sjseed.domain.Plant;
-import com.capstone.sjseed.dto.AttendDto;
-import com.capstone.sjseed.dto.PlantMainDto;
-import com.capstone.sjseed.dto.SignupRequestDto;
-import com.capstone.sjseed.dto.SignupResponseDto;
+import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -51,5 +48,10 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.attend(memberId)));
     }
 
+    @Operation(summary = "식물 목록 조회", description = "사용자의 식물 목록을 조회합니다.")
+    @GetMapping("/plantList/{memberId}")
+    public ResponseEntity<ApiResponse<List<PlantListDto>>> getPlantList(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.findPlantList(memberId)));
+    }
 
 }
