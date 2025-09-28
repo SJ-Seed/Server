@@ -28,6 +28,8 @@ public class Plant {
 
     private Date broughtDate;
 
+    private boolean diseased = false;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 

@@ -5,10 +5,7 @@ import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
-import com.capstone.sjseed.dto.AttendDto;
-import com.capstone.sjseed.dto.PlantMainDto;
-import com.capstone.sjseed.dto.SignupRequestDto;
-import com.capstone.sjseed.dto.SignupResponseDto;
+import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.CollectionRepository;
 import com.capstone.sjseed.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -64,7 +61,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlantMainDto> getPlantList(Long memberId) {
+    public List<PlantMainDto> getPlantList(Long memberId) { // 메인 화면에서 식물 목록 보기
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
@@ -109,5 +106,20 @@ public class MemberService {
         Boolean[] attendedDays = getAttendedDays(memberId);
 
         return AttendDto.of(attendedDays, member.getCoin() - previousCoin, member.getCoin());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PlantListDto> findPlantList(Long memberId) { // 식물 목록 보기
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        List<Plant> plants = member.getPlants();
+
+        return plants.stream().map(
+                plant -> PlantListDto.of(
+                        plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName()
+                )
+        ).collect(Collectors.toList());
     }
 }
