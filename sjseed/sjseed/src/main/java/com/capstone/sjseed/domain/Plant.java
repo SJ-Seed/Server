@@ -2,9 +2,11 @@ package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -24,11 +26,20 @@ public class Plant {
     private double humidity;
     private double soilWater;
 
-    private Date wateredDate;
+    private LocalDate wateredDate;
 
-    private Date broughtDate;
+    private LocalDate broughtDate;
 
-    private boolean diseased = false;
+    private boolean diseased;
+
+    @Builder
+    public Plant(String name, PlantSpecies species, Member member) {
+        this.name = name;
+        this.member = member;
+        this.broughtDate = LocalDate.now();
+        this.species = species;
+        this.diseased = false;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;

@@ -1,13 +1,17 @@
 package com.capstone.sjseed.service;
 
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
+import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.CollectionRepository;
 import com.capstone.sjseed.repository.MemberRepository;
+import com.capstone.sjseed.repository.PlantRepository;
+import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +29,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PlantSpeciesRepository plantSpeciesRepository;
+    private final PlantRepository plantRepository;
 
     @Transactional
     public SignupResponseDto signUp(SignupRequestDto signupDto) {
@@ -121,5 +127,28 @@ public class MemberService {
                         plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName()
                 )
         ).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PlantResponseDto registerPlant(Long memberId, String code, String name) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        PlantSpecies species = plantSpeciesRepository.findByCode(code).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, code)
+        );
+
+        Plant plant = Plant.builder()
+                .name(name)
+                .member(member)
+                .species(species)
+                .build();
+
+        plantRepository.save(plant);
+
+        return PlantResponseDto.of(
+                plant.getId(), plant.getName(), plant.getSpecies(), plant.getBroughtDate(), plant.getMember().getId()
+        );
     }
 }

@@ -30,7 +30,7 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getCoin(memberId)));
     }
 
-    @Operation(summary = "사용자의 식물 리스트 조회", description = "사용자의 식물 리스트를 조회합니다.")
+    @Operation(summary = "사용자의 식물 리스트 조회", description = "사용자의 식물 리스트를 조회합니다.(메인 화면에서 사용)")
     @GetMapping("/plants/{memberId}")
     public ResponseEntity<ApiResponse<List<PlantMainDto>>> getPlants(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getPlantList(memberId)));
@@ -48,10 +48,16 @@ public class MemberController {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.attend(memberId)));
     }
 
-    @Operation(summary = "식물 목록 조회", description = "사용자의 식물 목록을 조회합니다.")
+    @Operation(summary = "식물 목록 조회", description = "사용자의 식물 목록을 조회합니다.(식물 목록 화면에서 사용)")
     @GetMapping("/plantList/{memberId}")
     public ResponseEntity<ApiResponse<List<PlantListDto>>> getPlantList(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.findPlantList(memberId)));
+    }
+
+    @Operation(summary = "식물 등록", description = "식물을 등록합니다.")
+    @PostMapping("/plant/{memberId}")
+    public ResponseEntity<ApiResponse<PlantResponseDto>> registerPlant(@PathVariable Long memberId, @RequestBody PlantRequestDto plantRequestDto) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.registerPlant(memberId, plantRequestDto.code(), plantRequestDto.name())));
     }
 
 }
