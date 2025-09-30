@@ -1,10 +1,9 @@
 package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -24,13 +23,27 @@ public class Plant {
     private double humidity;
     private double soilWater;
 
-    private Date wateredDate;
+    private LocalDate wateredDate;
 
-    private Date broughtDate;
+    private LocalDate broughtDate;
+
+    private boolean diseased;
+
+    private String plantId;
+
+    @Builder
+    public Plant(String name, String plantId, Member member) {
+        this.name = name;
+        this.member = member;
+        this.broughtDate = LocalDate.now();
+        this.plantId = plantId;
+        this.diseased = false;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private PlantSpecies species;
 }

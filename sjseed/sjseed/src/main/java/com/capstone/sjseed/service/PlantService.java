@@ -47,11 +47,7 @@ public class PlantService {
                 () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, plant.getSpecies().getId())
         );
 
-        LocalDate wateredDate = plant.getWateredDate().toInstant()
-                .atZone(ZoneId.systemDefault())
-                .toLocalDate();
-
-        long daySinceWatered = ChronoUnit.DAYS.between(wateredDate, LocalDate.now());
+        long daySinceWatered = ChronoUnit.DAYS.between(plant.getWateredDate(), LocalDate.now());
 
         return daySinceWatered >= species.getPeriod();
     }

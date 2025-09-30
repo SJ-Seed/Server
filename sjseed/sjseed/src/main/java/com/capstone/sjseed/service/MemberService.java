@@ -1,16 +1,17 @@
 package com.capstone.sjseed.service;
 
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
+import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
-import com.capstone.sjseed.dto.AttendDto;
-import com.capstone.sjseed.dto.PlantMainDto;
-import com.capstone.sjseed.dto.SignupRequestDto;
-import com.capstone.sjseed.dto.SignupResponseDto;
+import com.capstone.sjseed.domain.PlantSpecies;
+import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.CollectionRepository;
 import com.capstone.sjseed.repository.MemberRepository;
+import com.capstone.sjseed.repository.PlantRepository;
+import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cglib.core.Local;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,8 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PlantSpeciesRepository plantSpeciesRepository;
+    private final PlantRepository plantRepository;
 
     @Transactional
     public SignupResponseDto signUp(SignupRequestDto signupDto) {
@@ -64,7 +67,7 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
-    public List<PlantMainDto> getPlantList(Long memberId) {
+    public List<PlantMainDto> getPlantList(Long memberId) { // 메인 화면에서 식물 목록 보기
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
@@ -109,5 +112,45 @@ public class MemberService {
         Boolean[] attendedDays = getAttendedDays(memberId);
 
         return AttendDto.of(attendedDays, member.getCoin() - previousCoin, member.getCoin());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PlantListDto> findPlantList(Long memberId) { // 식물 목록 보기
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        List<Plant> plants = member.getPlants();
+
+        return plants.stream().map(
+                plant -> PlantListDto.of(
+                        plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName()
+                )
+        ).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public PlantResponseDto registerPlant(Long memberId, String code, String name) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        if (plantRepository.findByName(name).isPresent()) {
+            if (plantRepository.findByName(name).get().getMember().getId().equals(member.getId())) {
+                throw new PlantHandler(ErrorStatus.DUPLICEATED_NAME, name);
+            }
+        }
+
+        Plant plant = Plant.builder()
+                .name(name)
+                .member(member)
+                .plantId(code)
+                .build();
+
+        plantRepository.save(plant);
+
+        return PlantResponseDto.of(
+                plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId()
+        );
     }
 }
