@@ -27,17 +27,19 @@ public class PlantDataService {
     public void save(PlantData plantData){
         plantDataRepository.save(plantData);
 
-        Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
+        if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
+            Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
                 .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
                 );
 
-        PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
-                .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
-                );
+            PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
+                    .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
+                    );
 
-        if (plant.getSpecies() == null) {
-            plant.setSpecies(plantSpecies);
-            plantRepository.save(plant);
+            if (plant.getSpecies() == null) {
+                plant.setSpecies(plantSpecies);
+                plantRepository.save(plant);
+            }
         }
     }
 
