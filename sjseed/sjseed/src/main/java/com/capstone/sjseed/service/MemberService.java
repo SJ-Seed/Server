@@ -138,6 +138,7 @@ public class MemberService {
         Plant plant = Plant.builder()
                 .name(name)
                 .member(member)
+                .plantId(code)
                 .build();
 
         plantRepository.save(plant);

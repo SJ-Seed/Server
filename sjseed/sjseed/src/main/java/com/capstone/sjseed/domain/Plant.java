@@ -32,11 +32,11 @@ public class Plant {
     private String plantId;
 
     @Builder
-    public Plant(String name, PlantSpecies species, Member member) {
+    public Plant(String name, String plantId, Member member) {
         this.name = name;
         this.member = member;
         this.broughtDate = LocalDate.now();
-        this.species = species;
+        this.plantId = plantId;
         this.diseased = false;
     }
 
