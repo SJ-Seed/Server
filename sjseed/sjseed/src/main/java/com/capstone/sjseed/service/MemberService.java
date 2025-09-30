@@ -135,20 +135,15 @@ public class MemberService {
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
 
-        PlantSpecies species = plantSpeciesRepository.findByCode(code).orElseThrow(
-                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, code)
-        );
-
         Plant plant = Plant.builder()
                 .name(name)
                 .member(member)
-                .species(species)
                 .build();
 
         plantRepository.save(plant);
 
         return PlantResponseDto.of(
-                plant.getId(), plant.getName(), plant.getSpecies(), plant.getBroughtDate(), plant.getMember().getId()
+                plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId()
         );
     }
 }

@@ -1,10 +1,7 @@
 package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -32,6 +29,8 @@ public class Plant {
 
     private boolean diseased;
 
+    private String plantId;
+
     @Builder
     public Plant(String name, PlantSpecies species, Member member) {
         this.name = name;
@@ -45,5 +44,6 @@ public class Plant {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @Setter
     private PlantSpecies species;
 }
