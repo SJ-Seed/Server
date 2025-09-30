@@ -20,6 +20,7 @@ public enum ErrorStatus implements BaseCode {
     WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER4003", "잘못된 비밀번호입니다."),
 
     PLANT_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANT4001", "해당 ID의 식물이 없습니다."),
+    DUPLICEATED_NAME(HttpStatus.MULTI_STATUS, "PLANT4002", "이미 사용 중인 닉네임입니다."),
     SPECIES_NOT_FOUND(HttpStatus.NOT_FOUND, "SPECIES4001", "해당 ID의 종이 없습니다.");
 
     private final HttpStatus status;

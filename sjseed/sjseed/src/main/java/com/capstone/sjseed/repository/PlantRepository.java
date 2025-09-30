@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     Optional<Plant> findByPlantId(String plantId);
+
+    Optional<Plant> findByName(String name);
 }
