@@ -9,14 +9,18 @@ import com.capstone.sjseed.repository.PlantDataRepository;
 import com.capstone.sjseed.repository.PlantRepository;
 import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 //import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class PlantDataService {
 
     private final PlantDataRepository plantDataRepository;
@@ -24,6 +28,7 @@ public class PlantDataService {
     private final PlantSpeciesRepository plantSpeciesRepository;
 //    private final WebClient webClient = WebClient.create("https://sj-seed.com"); // TODO: 배포 시 서버 URL로 변경 필수
 
+    @Transactional
     public void save(PlantData plantData){
         plantDataRepository.save(plantData);
 
@@ -38,8 +43,12 @@ public class PlantDataService {
 
             if (plant.getSpecies() == null) {
                 plant.setSpecies(plantSpecies);
-                plantRepository.save(plant);
             }
+            plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
+            plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
+            plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
+
+            plantRepository.save(plant);
         }
     }
 

@@ -19,10 +19,16 @@ public class Plant {
     @Column(length = 15, nullable = false)
     private String name;
 
+    @Setter
     private double temperature;
+
+    @Setter
     private double humidity;
+
+    @Setter
     private double soilWater;
 
+    @Setter
     private LocalDate wateredDate;
 
     private LocalDate broughtDate;
