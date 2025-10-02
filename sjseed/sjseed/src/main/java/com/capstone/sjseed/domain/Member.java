@@ -6,7 +6,6 @@ import org.hibernate.annotations.ColumnDefault;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -40,11 +39,16 @@ public class Member extends BaseEntity{
 
     @Column(nullable = false)
     @ColumnDefault("'0000000'")
+    @Setter
     private String attendedDays;
 
     @Column(nullable = false)
     @Setter
     private LocalDate lastAttendDate = LocalDate.now();
+
+    @Column(nullable = false)
+    @Setter
+    private int consecutiveAttendDays = 1;
 
     @Column(nullable = false)
     @ColumnDefault("false")
@@ -76,5 +80,11 @@ public class Member extends BaseEntity{
 
     public void initializeAttendedDays() {
         this.attendedDays = "0000000";
+    }
+
+    public void attendDay(int day) {
+        StringBuilder sb = new StringBuilder(this.attendedDays);
+        sb.setCharAt(day, '1');
+        this.attendedDays = sb.toString();
     }
 }
