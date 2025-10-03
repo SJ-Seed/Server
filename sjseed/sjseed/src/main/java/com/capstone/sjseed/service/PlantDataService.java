@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 //import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -30,25 +31,29 @@ public class PlantDataService {
 
     @Transactional
     public void save(PlantData plantData){
-        plantDataRepository.save(plantData);
+        PlantData lastData = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plantData.getPlantId());
 
-        if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
-            Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
-                .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
-                );
+        if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 60) {
+            plantDataRepository.save(plantData);
 
-            PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
-                    .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
-                    );
+            if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
+                Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
+                        .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
+                        );
 
-            if (plant.getSpecies() == null) {
-                plant.setSpecies(plantSpecies);
+                PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
+                        .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
+                        );
+
+                if (plant.getSpecies() == null) {
+                    plant.setSpecies(plantSpecies);
+                }
+                plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
+                plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
+                plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
+
+                plantRepository.save(plant);
             }
-            plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
-            plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
-            plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
-
-            plantRepository.save(plant);
         }
     }
 

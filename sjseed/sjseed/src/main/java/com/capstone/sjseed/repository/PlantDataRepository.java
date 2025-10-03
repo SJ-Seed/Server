@@ -9,4 +9,6 @@ import java.time.LocalDateTime;
 @Repository
 public interface PlantDataRepository extends JpaRepository<PlantData, String> {
     void deleteByCreatedAtBefore(LocalDateTime localDateTime);
+
+    PlantData findTopByPlantIdOrderByCreatedAtDesc(String plantId);
 }
