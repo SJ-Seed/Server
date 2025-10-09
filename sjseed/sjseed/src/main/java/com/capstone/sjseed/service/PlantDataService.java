@@ -32,6 +32,8 @@ public class PlantDataService {
     @Transactional
     public void save(PlantData plantData){
         PlantData lastData = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plantData.getPlantId());
+        log.info(lastData.getPlantId());
+        log.info(lastData.getCreatedAt().toString());
 
         if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 60) {
             plantDataRepository.save(plantData);
