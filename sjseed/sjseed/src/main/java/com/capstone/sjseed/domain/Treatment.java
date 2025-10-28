@@ -2,10 +2,11 @@ package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -18,14 +19,21 @@ public class Treatment {
     private Long id;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDate date;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Disease disease;
+    private String disease;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Plant plant;
+
+    @Builder
+    public Treatment(Member member, String disease, Plant plant) {
+        this.member = member;
+        this.date = LocalDate.now();
+        this.disease = disease;
+        this.plant = plant;
+    }
 }
