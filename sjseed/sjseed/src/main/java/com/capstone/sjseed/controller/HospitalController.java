@@ -2,14 +2,13 @@ package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
 import com.capstone.sjseed.dto.TreatmentListDto;
+import com.capstone.sjseed.dto.TreatmentRequestDto;
+import com.capstone.sjseed.dto.TreatmentResponseDto;
 import com.capstone.sjseed.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,5 +22,11 @@ public class HospitalController {
     @GetMapping("/treatmentList/{memberId}")
     public ResponseEntity<ApiResponse<List<TreatmentListDto>>> getTreatmentList(@PathVariable Long memberId){
         return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.findTreatmentList(memberId)));
+    }
+
+    @Operation(summary = "진료 보기", description = "LLM API를 호출하여 식물 사진의 질병 유무를 확인합니다.")
+    @PostMapping("/treat/{memberId}/{plantId}")
+    public ResponseEntity<ApiResponse<TreatmentResponseDto>> analyze(@RequestBody TreatmentRequestDto requestDto, @PathVariable Long memberId, @PathVariable Long plantId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.treat(requestDto, memberId, plantId)));
     }
 }
