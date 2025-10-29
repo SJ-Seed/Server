@@ -3,14 +3,13 @@ package com.capstone.sjseed.service;
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
-import com.capstone.sjseed.domain.Disease;
-import com.capstone.sjseed.domain.Member;
-import com.capstone.sjseed.domain.Plant;
-import com.capstone.sjseed.domain.Treatment;
+import com.capstone.sjseed.domain.*;
+import com.capstone.sjseed.dto.PlantStatusDto;
 import com.capstone.sjseed.dto.TreatmentListDto;
 import com.capstone.sjseed.dto.TreatmentRequestDto;
 import com.capstone.sjseed.dto.TreatmentResponseDto;
 import com.capstone.sjseed.repository.MemberRepository;
+import com.capstone.sjseed.repository.PlantDataRepository;
 import com.capstone.sjseed.repository.PlantRepository;
 import com.capstone.sjseed.repository.TreatmentRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ public class HospitalService {
     private final MemberRepository memberRepository;
     private final TreatmentRepository treatmentRepository;
     private final PlantRepository plantRepository;
+    private final PlantDataRepository plantDataRepository;
 
     @Transactional(readOnly = true)
     public List<TreatmentListDto> findTreatmentList(Long memberId) {
@@ -49,8 +50,54 @@ public class HospitalService {
             .baseUrl("https://sj-seed.n-e.kr")
             .build();
 
+    private PlantStatusDto getRecentTwoWeeksData(Long plantId) {
+        LocalDateTime twoWeeksAgo = LocalDateTime.now().minusWeeks(2);
+        List<PlantData> recentData = plantDataRepository.findRecentTwoWeeks(String.valueOf(plantId), twoWeeksAgo);
+
+        if (recentData.isEmpty()) {
+            return PlantStatusDto.of(Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN, Double.NaN);
+        }
+
+        double avgTemp = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getTemperature()))
+                .average()
+                .orElse(Double.NaN);
+
+        double maxTemp = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getTemperature()))
+                .max()
+                .orElse(Double.NaN);
+
+        double minTemp = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getTemperature()))
+                .min()
+                .orElse(Double.NaN);
+
+        double avgHumidity = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getHumidity()))
+                .average()
+                .orElse(Double.NaN);
+
+        double maxHumidity = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getHumidity()))
+                .max()
+                .orElse(Double.NaN);
+
+        double minHumidity = recentData.stream()
+                .mapToDouble(p -> Double.parseDouble(p.getHumidity()))
+                .min()
+                .orElse(Double.NaN);
+
+        PlantData latest = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(String.valueOf(plantId));
+        double latestTemp = latest != null ? Double.parseDouble(latest.getTemperature()) : Double.NaN;
+        double latestHumidity = latest != null ? Double.parseDouble(latest.getHumidity()) : Double.NaN;
+
+        return PlantStatusDto.of(avgTemp, avgHumidity, maxTemp, minTemp, maxHumidity, minHumidity, latestTemp, latestHumidity);
+    }
+
+
     @Transactional
-    public TreatmentResponseDto treat(TreatmentRequestDto requestDto, Long memberId, Long plantId) {
+    public TreatmentResponseDto treat(String url, Long memberId, Long plantId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
@@ -58,6 +105,14 @@ public class HospitalService {
         Plant plant = plantRepository.findById(plantId).orElseThrow(
                 () -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND, plantId)
         );
+
+        PlantStatusDto status = getRecentTwoWeeksData(plantId);
+        // "최고 기온: 32도, 최저 기온: 25도, 최근 기온: 28도, 평균 기온: 28도"
+        String temp = "최고 기온: " + status.maxTemp() + "도, 최저 기온: " + status.minTemp() + "도, 최근 기온: " + status.lastTemp() + "도, 평균 기온: " + status.avgTemp() + "도";
+        // "최고 습도: 85%, 최저 습도: 75%, 최근 습도: 85%, 평균 습도: 80%"
+        String hum = "최고 습도: " + status.maxHum() + "%, 최저 습도: " + status.minHum() + "%, 최근 습도: " + status.lastHum() + "%, 평균 습도: " + status.avgHum() + "%";
+
+        TreatmentRequestDto requestDto = TreatmentRequestDto.of(url, temp, hum);
 
         TreatmentResponseDto dto = analyzer.post()
                 .uri("/analyze")
