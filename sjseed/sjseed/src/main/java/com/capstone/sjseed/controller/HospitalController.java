@@ -26,7 +26,7 @@ public class HospitalController {
 
     @Operation(summary = "진료 보기", description = "LLM API를 호출하여 식물 사진의 질병 유무를 확인합니다.")
     @PostMapping("/treat/{memberId}/{plantId}")
-    public ResponseEntity<ApiResponse<TreatmentResponseDto>> analyze(@RequestBody TreatmentRequestDto requestDto, @PathVariable Long memberId, @PathVariable Long plantId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.treat(requestDto, memberId, plantId)));
+    public ResponseEntity<ApiResponse<TreatmentResponseDto>> analyze(@RequestBody String url , @PathVariable Long memberId, @PathVariable Long plantId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.treat(url, memberId, plantId)));
     }
 }
