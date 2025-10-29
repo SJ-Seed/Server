@@ -4,11 +4,14 @@ import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Piece;
+import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.PieceListDto;
 import com.capstone.sjseed.dto.RandomResultDto;
 import com.capstone.sjseed.repository.MemberRepository;
 import com.capstone.sjseed.repository.PieceRepository;
+import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CollectionService {
     private final MemberRepository memberRepository;
     private final PieceRepository pieceRepository;
+    private final PlantSpeciesRepository plantSpeciesRepository;
 
     @Transactional(readOnly = true)
     public List<PieceListDto> getPieceList(Long memberId) {
@@ -37,14 +42,19 @@ public class CollectionService {
         ).collect(Collectors.toList());
     }
 
-    @Transactional(readOnly = true)
-    public RandomResultDto randomSelect() {
+    @Transactional
+    public RandomResultDto randomSelect(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
         Random random = new Random();
         int rand = random.nextInt(600);
         String name;
 
-
-        if (rand < 200) {
+        if (rand < 120) {
+            name = null;
+        } else if (rand < 200) {
             name = "상추";
         } else if (rand < 280) {
             name = "바질";
@@ -68,6 +78,18 @@ public class CollectionService {
             name = "포도";
         } else {
             name = "복숭아";
+        }
+
+        if (name != null && plantSpeciesRepository.existsByName(name) && !pieceRepository.existsByCollectionAndSpecies(member.getCollection(), plantSpeciesRepository.findByName(name))) {
+            PlantSpecies species = plantSpeciesRepository.findByName(name);
+            log.info(species.getName());
+
+            Piece piece = Piece.builder()
+                    .species(species)
+                    .collection(member.getCollection())
+                    .build();
+
+            pieceRepository.save(piece);
         }
 
         return rand < 120 ? new RandomResultDto(false, null) : new RandomResultDto(true, name);

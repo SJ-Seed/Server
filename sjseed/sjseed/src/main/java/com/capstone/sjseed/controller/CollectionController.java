@@ -25,8 +25,8 @@ public class CollectionController {
     }
 
     @Operation(summary = "도감 조각 뽑기", description = "도감 조각을 랜덤으로 뽑습니다.")
-    @GetMapping("/random")
-    public ResponseEntity<ApiResponse<RandomResultDto>> getRandomResult() {
-        return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.randomSelect()));
+    @PostMapping("/random/{memberId}")
+    public ResponseEntity<ApiResponse<RandomResultDto>> getRandomResult(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.randomSelect(memberId)));
     }
 }
