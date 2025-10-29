@@ -35,4 +35,7 @@ public class PlantSpecies {
 
     @Column(nullable = false)
     private String code;
+
+    @Column(nullable = false)
+    private int rarity;
 }

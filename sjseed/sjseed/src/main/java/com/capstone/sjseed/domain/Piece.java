@@ -18,9 +18,6 @@ public class Piece {
     private Long id;
 
     @Column(nullable = false)
-    private Rarity rarity;
-
-    @Column(nullable = false)
     private Date date;
 
     @Column(nullable = false)
