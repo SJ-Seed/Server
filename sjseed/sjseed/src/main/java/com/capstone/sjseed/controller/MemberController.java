@@ -59,5 +59,4 @@ public class MemberController {
     public ResponseEntity<ApiResponse<PlantResponseDto>> registerPlant(@PathVariable Long memberId, @RequestBody PlantRequestDto plantRequestDto) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.registerPlant(memberId, plantRequestDto.code(), plantRequestDto.name())));
     }
-
 }

@@ -6,6 +6,7 @@ import com.capstone.sjseed.repository.ImageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
@@ -32,6 +33,7 @@ public class ImageService {
     @Value("${cloud.aws.region.static}")
     private String region;
 
+    @Transactional
     public String uploadFile(MultipartFile file) throws IOException {
         String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
 
@@ -54,6 +56,7 @@ public class ImageService {
 
     private final ImageRepository imageRepository;
 
+    @Transactional
     public ImageDto saveImage(MultipartFile file) throws IOException {
         String imageUrl = uploadFile(file);
 

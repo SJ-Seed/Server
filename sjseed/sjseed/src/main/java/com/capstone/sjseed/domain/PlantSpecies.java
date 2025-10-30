@@ -25,7 +25,10 @@ public class PlantSpecies {
     private String properHum;
 
     @Column(nullable = false)
-    private String properSoil;
+    private String process;
+
+    @Column(nullable = false)
+    private String water;
 
     @Column(nullable = false)
     private int period;
@@ -35,4 +38,7 @@ public class PlantSpecies {
 
     @Column(nullable = false)
     private String code;
+
+    @Column(nullable = false)
+    private int rarity;
 }
