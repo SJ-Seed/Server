@@ -1,11 +1,13 @@
 package com.capstone.sjseed.service;
 
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
+import com.capstone.sjseed.apiPayload.exception.handler.PieceHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Piece;
 import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.PieceListDto;
+import com.capstone.sjseed.dto.PlantSpeciesDetailDto;
 import com.capstone.sjseed.dto.RandomResultDto;
 import com.capstone.sjseed.repository.MemberRepository;
 import com.capstone.sjseed.repository.PieceRepository;
@@ -93,5 +95,16 @@ public class CollectionService {
         }
 
         return rand < 120 ? new RandomResultDto(false, null) : new RandomResultDto(true, name);
+    }
+
+    @Transactional(readOnly = true)
+    public PlantSpeciesDetailDto getPlantSpeciesDetail(Long pieceId) {
+        Piece piece = pieceRepository.findById(pieceId).orElseThrow(
+                () -> new PieceHandler(ErrorStatus.PIECE_NOT_FOUND, pieceId)
+        );
+
+        PlantSpecies species = piece.getSpecies();
+
+        return PlantSpeciesDetailDto.of(species.getName(), species.getProperTemp(), species.getProperHum(), species.getProcess(), species.getWater(), species.getDescription());
     }
 }

@@ -2,6 +2,7 @@ package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
 import com.capstone.sjseed.dto.PieceListDto;
+import com.capstone.sjseed.dto.PlantSpeciesDetailDto;
 import com.capstone.sjseed.dto.RandomResultDto;
 import com.capstone.sjseed.service.CollectionService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,5 +29,11 @@ public class CollectionController {
     @PostMapping("/random/{memberId}")
     public ResponseEntity<ApiResponse<RandomResultDto>> getRandomResult(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.randomSelect(memberId)));
+    }
+
+    @Operation(summary = "조각 상세 보기", description = "도감 조각의 상세 정보를 조회합니다.")
+    @GetMapping("/piece/{pieceId}")
+    public ResponseEntity<ApiResponse<PlantSpeciesDetailDto>> getPieceDetail(@PathVariable Long pieceId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.getPlantSpeciesDetail(pieceId)));
     }
 }

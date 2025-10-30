@@ -34,7 +34,7 @@ public class PlantService {
 
         return PlantDetailDto.of(
                 plant.getName(), species.getName(), plant.getBroughtDate(), species.getDescription(), species.getProperTemp(),
-                species.getProperHum(), species.getProperSoil(), species.getPeriod());
+                species.getProperHum(), species.getWater());
     }
 
     @Transactional(readOnly = true)
