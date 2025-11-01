@@ -3,6 +3,7 @@ package com.capstone.sjseed.service;
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
+import com.capstone.sjseed.config.JwtProvider;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
@@ -28,9 +29,10 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final PlantSpeciesRepository plantSpeciesRepository;
     private final PlantRepository plantRepository;
+    private final JwtProvider jwtProvider;
 
     @Transactional
-    public SignupResponseDto signUp(SignupRequestDto signupDto) {
+    public SignUpResponseDto signUp(SignUpRequestDto signupDto) {
         if (memberRepository.existsByLoginId(signupDto.loginId())) {
             throw new MemberHandler(ErrorStatus.DUPLICATED_ID);
         }
@@ -49,9 +51,23 @@ public class MemberService {
 
         memberRepository.save(member);
 
-        return SignupResponseDto.of(
+        return SignUpResponseDto.of(
                 member.getName(), member.getYear(), member.getLoginId(), member.getPassword(), member.getPhoneNumber()
         );
+    }
+
+    @Transactional
+    public SignInResponseDto signIn(SignInRequestDto requestDto) {
+        Member member = memberRepository.findByLoginId((requestDto.loginId()))
+                .orElseThrow(() -> new MemberHandler(ErrorStatus.INVALID_ID_OR_PASSWORD));
+
+        if (!passwordEncoder.matches(requestDto.password(), member.getPassword())) {
+            throw new MemberHandler(ErrorStatus.INVALID_ID_OR_PASSWORD);
+        }
+
+        String token = jwtProvider.createToken(member.getLoginId());
+
+        return SignInResponseDto.of(String.valueOf(member.getId()), member.getName(), member.getLoginId(), token);
     }
 
     @Transactional(readOnly = true)
