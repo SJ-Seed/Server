@@ -17,7 +17,7 @@ public enum ErrorStatus implements BaseCode {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "MEMBER4001", "해당 ID의 사용자가 없습니다."),
     DUPLICATED_ID(HttpStatus.MULTI_STATUS, "MEMBER4002", "이미 사용중인 ID입니다."),
-    WRONG_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER4003", "잘못된 비밀번호입니다."),
+    INVALID_ID_OR_PASSWORD(HttpStatus.BAD_REQUEST, "MEMBER4003", "잘못된 ID 또는 비밀번호입니다."),
 
     PLANT_NOT_FOUND(HttpStatus.NOT_FOUND, "PLANT4001", "해당 ID의 식물이 없습니다."),
     DUPLICEATED_NAME(HttpStatus.MULTI_STATUS, "PLANT4002", "이미 사용 중인 닉네임입니다."),
