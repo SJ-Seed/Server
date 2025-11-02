@@ -9,6 +9,7 @@ import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
 import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.MemberRepository;
+import com.capstone.sjseed.repository.PieceRepository;
 import com.capstone.sjseed.repository.PlantRepository;
 import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final PlantSpeciesRepository plantSpeciesRepository;
     private final PlantRepository plantRepository;
+    private final PieceRepository pieceRepository;
     private final JwtProvider jwtProvider;
 
     @Transactional
@@ -194,5 +196,17 @@ public class MemberService {
         return PlantResponseDto.of(
                 plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId()
         );
+    }
+
+    @Transactional(readOnly = true)
+    public MemberDetailDto getMemberDetail(Long memberId) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        long plantNum = plantRepository.countByMember(member);
+        long pieceNum = pieceRepository.countByMemberId(memberId);
+
+        return new MemberDetailDto(member.getName(), (int) plantNum, (int) pieceNum);
     }
 }

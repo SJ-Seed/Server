@@ -29,4 +29,7 @@ public class Collection extends BaseEntity{
 
     @OneToMany(fetch = FetchType.LAZY)
     private List<Piece> pieces = new ArrayList<>();
+
+    @OneToOne(fetch = FetchType.LAZY)
+    private Member member;
 }

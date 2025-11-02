@@ -6,6 +6,7 @@ import com.capstone.sjseed.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -63,5 +64,11 @@ public class MemberController {
     @PostMapping("/plant/{memberId}")
     public ResponseEntity<ApiResponse<PlantResponseDto>> registerPlant(@PathVariable Long memberId, @RequestBody PlantRequestDto plantRequestDto) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.registerPlant(memberId, plantRequestDto.code(), plantRequestDto.name())));
+    }
+
+    @Operation(summary = "마이페이지 내 정보 조회", description = "마이페이지 화면에서 자신의 정보를 조회합니다.")
+    @GetMapping("/detail/{memberId}")
+    public ResponseEntity<ApiResponse<MemberDetailDto>> getMemberDetail(@PathVariable Long memberId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getMemberDetail(memberId)));
     }
 }

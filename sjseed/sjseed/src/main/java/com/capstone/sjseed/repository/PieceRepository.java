@@ -4,6 +4,8 @@ import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Piece;
 import com.capstone.sjseed.domain.PlantSpecies;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -15,4 +17,7 @@ public interface PieceRepository extends JpaRepository<Piece, Long> {
     boolean existsBySpecies(PlantSpecies species);
 
     boolean existsByCollectionAndSpecies(Collection collection, PlantSpecies byName);
+
+    @Query("SELECT COUNT(p) FROM Piece p WHERE p.collection.member.id = :memberId")
+    long countByMemberId(@Param("memberId") long memberId);
 }
