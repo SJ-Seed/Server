@@ -30,6 +30,7 @@ public class Member extends BaseEntity{
     private String password;
 
     @Column(nullable = false)
+    @Setter
     private String phoneNumber;
 
     @Column(nullable = false)

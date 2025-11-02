@@ -71,4 +71,10 @@ public class MemberController {
     public ResponseEntity<ApiResponse<MemberDetailDto>> getMemberDetail(@PathVariable Long memberId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(memberService.getMemberDetail(memberId)));
     }
+
+    @Operation(summary = "전화번호 수정", description = "마이페이지 화면에서 자신의 전화번호를 수정합니다.")
+    @PatchMapping("/update/phoneNumber/{memberId}/{phoneNumber}")
+    public ResponseEntity<ApiResponse<MemberDto>> updatePhoneNumber(@PathVariable Long memberId, @PathVariable String phoneNumber) {
+        return  ResponseEntity.ok(ApiResponse.onSuccess(memberService.updatePhoneNumber(memberId, phoneNumber)));
+    }
 }

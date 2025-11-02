@@ -207,6 +207,18 @@ public class MemberService {
         long plantNum = plantRepository.countByMember(member);
         long pieceNum = pieceRepository.countByMemberId(memberId);
 
-        return new MemberDetailDto(member.getName(), (int) plantNum, (int) pieceNum);
+        return MemberDetailDto.of(member.getName(), (int) plantNum, (int) pieceNum);
+    }
+
+    @Transactional
+    public MemberDto updatePhoneNumber(Long memberId, String phoneNumber) {
+        Member member = memberRepository.findById(memberId).orElseThrow(
+                () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
+        );
+
+        member.setPhoneNumber(phoneNumber);
+        memberRepository.save(member);
+
+        return MemberDto.of(member.getId(), member.getName(), member.getLoginId(), member.getPhoneNumber());
     }
 }
