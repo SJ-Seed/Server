@@ -92,9 +92,11 @@ public class CollectionService {
                     .build();
 
             pieceRepository.save(piece);
+
+            return RandomResultDto.of(true, name, piece.getId());
         }
 
-        return rand < 120 ? new RandomResultDto(false, null) : new RandomResultDto(true, name);
+        return RandomResultDto.of(false, null, null);
     }
 
     @Transactional(readOnly = true)
