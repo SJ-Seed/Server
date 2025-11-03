@@ -84,7 +84,6 @@ public class CollectionService {
 
         if (name != null && plantSpeciesRepository.existsByName(name) && !pieceRepository.existsByCollectionAndSpecies(member.getCollection(), plantSpeciesRepository.findByName(name))) {
             PlantSpecies species = plantSpeciesRepository.findByName(name);
-            log.info(species.getName());
 
             Piece piece = Piece.builder()
                     .species(species)
