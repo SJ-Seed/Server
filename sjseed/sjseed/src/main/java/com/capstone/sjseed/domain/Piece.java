@@ -1,10 +1,7 @@
 package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
@@ -26,6 +23,8 @@ public class Piece {
     private PlantSpecies species;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "collection_id")
+    @Setter
     private Collection collection;
 
     @Builder

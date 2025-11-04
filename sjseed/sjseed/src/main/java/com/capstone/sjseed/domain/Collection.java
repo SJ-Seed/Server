@@ -27,9 +27,14 @@ public class Collection extends BaseEntity{
 
     }
 
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "collection", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Piece> pieces = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     private Member member;
+
+    public void addPiece(Piece piece) {
+        this.pieces.add(piece);
+        piece.setCollection(this);
+    }
 }

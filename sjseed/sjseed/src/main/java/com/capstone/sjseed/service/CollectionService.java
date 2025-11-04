@@ -90,6 +90,8 @@ public class CollectionService {
                     .collection(member.getCollection())
                     .build();
 
+            member.getCollection().addPiece(piece);
+
             pieceRepository.save(piece);
 
             return RandomResultDto.of(true, name, piece.getId());
