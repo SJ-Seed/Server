@@ -108,6 +108,6 @@ public class CollectionService {
 
         PlantSpecies species = piece.getSpecies();
 
-        return PlantSpeciesDetailDto.of(species.getName(), species.getProperTemp(), species.getProperHum(), species.getProcess(), species.getWater(), species.getDescription());
+        return PlantSpeciesDetailDto.of(species.getName(), species.getProperTemp(), species.getProperHum(), species.getProcess(), species.getWater(), species.getDescription(), species.getRarity());
     }
 }

@@ -8,9 +8,10 @@ public record PlantSpeciesDetailDto(
         String properHum,
         String process,
         String water,
-        String description
+        String description,
+        int rarity
 ) {
-    public static PlantSpeciesDetailDto of(String name, String properTemp, String properHum, String process, String water, String description) {
-        return new PlantSpeciesDetailDto(name, properTemp, properHum, process, water, description);
+    public static PlantSpeciesDetailDto of(String name, String properTemp, String properHum, String process, String water, String description, int rarity) {
+        return new PlantSpeciesDetailDto(name, properTemp, properHum, process, water, description, rarity);
     }
 }
