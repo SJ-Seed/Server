@@ -82,7 +82,7 @@ public class CollectionService {
             name = "복숭아";
         }
 
-        if (name != null && plantSpeciesRepository.existsByName(name) && !pieceRepository.existsByCollectionAndSpecies(member.getCollection(), plantSpeciesRepository.findByName(name))) {
+        if (name != null && plantSpeciesRepository.existsByName(name)) {
             PlantSpecies species = plantSpeciesRepository.findByName(name);
 
             Piece piece = Piece.builder()
