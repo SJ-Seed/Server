@@ -2,6 +2,7 @@ package com.capstone.sjseed.service;
 
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.exception.handler.PieceHandler;
+import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Piece;
@@ -101,12 +102,10 @@ public class CollectionService {
     }
 
     @Transactional(readOnly = true)
-    public PlantSpeciesDetailDto getPlantSpeciesDetail(Long pieceId) {
-        Piece piece = pieceRepository.findById(pieceId).orElseThrow(
-                () -> new PieceHandler(ErrorStatus.PIECE_NOT_FOUND, pieceId)
+    public PlantSpeciesDetailDto getPlantSpeciesDetail(Long speciesId) {
+        PlantSpecies species = plantSpeciesRepository.findById(speciesId).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, speciesId)
         );
-
-        PlantSpecies species = piece.getSpecies();
 
         return PlantSpeciesDetailDto.of(species.getName(), species.getProperTemp(), species.getProperHum(), species.getProcess(), species.getWater(), species.getDescription(), species.getRarity());
     }

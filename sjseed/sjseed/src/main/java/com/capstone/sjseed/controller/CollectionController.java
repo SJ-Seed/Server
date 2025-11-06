@@ -32,8 +32,8 @@ public class CollectionController {
     }
 
     @Operation(summary = "조각 상세 보기", description = "도감 조각의 상세 정보를 조회합니다.")
-    @GetMapping("/piece/{pieceId}")
-    public ResponseEntity<ApiResponse<PlantSpeciesDetailDto>> getPieceDetail(@PathVariable Long pieceId) {
-        return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.getPlantSpeciesDetail(pieceId)));
+    @GetMapping("/piece/{speciesId}")
+    public ResponseEntity<ApiResponse<PlantSpeciesDetailDto>> getPieceDetail(@PathVariable Long speciesId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(collectionService.getPlantSpeciesDetail(speciesId)));
     }
 }
