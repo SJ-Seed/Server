@@ -91,7 +91,7 @@ public class MemberService {
 
         return plants.stream().map(
                 plant -> PlantMainDto.of(
-                        plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater())
+                        plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater(), plant.getSpecies().getId())
         ).collect(Collectors.toList());
     }
 
@@ -168,7 +168,7 @@ public class MemberService {
 
         return plants.stream().map(
                 plant -> PlantListDto.of(
-                        plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName()
+                        plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName(), plant.getSpecies().getId()
                 )
         ).collect(Collectors.toList());
     }
