@@ -8,10 +8,11 @@ public record PlantResponseDto(
         Long id,
         String name,
         LocalDate broughtDate,
-        Long memberId
+        Long memberId,
+        Long speciesId
 ) {
 
-    public static PlantResponseDto of(Long id, String name, LocalDate broughtDate, Long memberId) {
-        return new PlantResponseDto(id, name, broughtDate, memberId);
+    public static PlantResponseDto of(Long id, String name, LocalDate broughtDate, Long memberId, Long speciesId) {
+        return new PlantResponseDto(id, name, broughtDate, memberId, speciesId);
     }
 }
