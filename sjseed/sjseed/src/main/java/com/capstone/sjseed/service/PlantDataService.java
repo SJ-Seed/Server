@@ -65,16 +65,9 @@ public class PlantDataService {
 
     // 매일 새벽 3시에 실행
     @Scheduled(cron = "0 0 3 * * ?")
+    @Transactional
     public void deleteOldData() {
         plantDataRepository.deleteByCreatedAtBefore(LocalDateTime.now().minusDays(14));
     }
 
-//    @Scheduled(cron = "0 0 * * * ?")
-//    public void callSaveApiEveryHour() {
-//        webClient.post()
-//                .uri("/api/data/get")
-//                .retrieve()
-//                .bodyToMono(Void.class)
-//                .block(); // 동기로 실행 (block 제거하면 비동기 실행됨)
-//    }
 }
