@@ -32,8 +32,12 @@ public class PlantDataService {
     @Transactional
     public void save(PlantData plantData){
         PlantData lastData = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plantData.getPlantId());
-        log.info(lastData.getPlantId());
-        log.info(lastData.getCreatedAt().toString());
+        if (lastData == null) {
+   	     log.warn("⚠️ lastData is NULL for plantId: {}", plantData.getPlantId());
+	} else {
+   	     log.info("✅ lastData found for plantId: {}", lastData.getPlantId());
+  	     log.info("createdAt: {}", lastData.getCreatedAt());
+	}
 
         if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 60) {
             plantDataRepository.save(plantData);
