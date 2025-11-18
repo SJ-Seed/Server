@@ -115,7 +115,7 @@ public class MemberService {
 
         LocalDate today = LocalDate.now();
 
-        int index = (today.getDayOfWeek().getValue() % 7);
+        int index = today.getDayOfWeek().getValue() - 1;
         boolean ifFirstAttend = false;
 
         for (int i = index + 1; i < member.getAttendedDays().length(); i++) {
