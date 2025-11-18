@@ -32,35 +32,39 @@ public class PlantDataService {
     @Transactional
     public void save(PlantData plantData){
         PlantData lastData = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plantData.getPlantId());
-        if (lastData == null) {
-   	     log.warn("⚠️ lastData is NULL for plantId: {}", plantData.getPlantId());
-	} else {
-   	     log.info("✅ lastData found for plantId: {}", lastData.getPlantId());
-  	     log.info("createdAt: {}", lastData.getCreatedAt());
-	}
-
-        if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() >= 60) {
-            plantDataRepository.save(plantData);
-
-            if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
-                Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
-                        .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
-                        );
-
-                PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
-                        .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
-                        );
-
-                if (plant.getSpecies() == null) {
-                    plant.setSpecies(plantSpecies);
-                }
-                plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
-                plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
-                plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
-
-                plantRepository.save(plant);
+//        if (lastData == null) {
+//   	     log.warn("⚠️ lastData is NULL for plantId: {}", plantData.getPlantId());
+//        } else {
+//             log.info("✅ lastData found for plantId: {}", lastData.getPlantId());
+//             log.info("createdAt: {}", lastData.getCreatedAt());
+//        }
+        if (lastData != null){
+            if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() < 60) {
+                return;
             }
         }
+
+        plantDataRepository.save(plantData);
+
+        if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
+            Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
+                    .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
+                    );
+
+            PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
+                    .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
+                    );
+
+            if (plant.getSpecies() == null) {
+                plant.setSpecies(plantSpecies);
+            }
+            plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
+            plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
+            plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
+
+            plantRepository.save(plant);
+        }
+
     }
 
     // 매일 새벽 3시에 실행

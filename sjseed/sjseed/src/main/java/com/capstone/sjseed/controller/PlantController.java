@@ -25,4 +25,10 @@ public class PlantController {
     public ResponseEntity<ApiResponse<Boolean>> ifNeedWater(@PathVariable Long plantId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(plantService.ifNeedWater(plantId)));
     }
+
+    @Operation(summary = "물 주기 여부 확인", description = "식물에 물을 줬는지 확인합니다.")
+    @GetMapping("/ifWatered/{plantId}")
+    public ResponseEntity<ApiResponse<Boolean>> ifWatered(@PathVariable Long plantId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(plantService.ifWatered(plantId)));
+    }
 }

@@ -192,15 +192,8 @@ public class MemberService {
                 .plantId(code)
                 .build();
 
-        PlantSpecies species = plantSpeciesRepository.findByCode(code).orElseThrow(
-                () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, code)
-        );
-
-        plant.setSpecies(species);
-        plantRepository.save(plant);
-
         return PlantResponseDto.of(
-                plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId(), plant.getSpecies().getId()
+                plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId()
         );
     }
 
