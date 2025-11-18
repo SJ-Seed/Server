@@ -115,12 +115,22 @@ public class MemberService {
 
         LocalDate today = LocalDate.now();
 
+        int index = (today.getDayOfWeek().getValue() % 7);
+        boolean ifFirstAttend = false;
+
+        for (int i = index + 1; i < member.getAttendedDays().length(); i++) {
+            if (member.getAttendedDays().charAt(i) == '1') {
+                ifFirstAttend = true;
+                break;
+            }
+        }
+
         // 월요일이면 연속 출석 초기화
-        if (today.getDayOfWeek() == DayOfWeek.MONDAY) {
+        if (today.getDayOfWeek() == DayOfWeek.MONDAY || ifFirstAttend) {
             member.setConsecutiveAttendDays(0);
         }
 
-        if (!today.equals(member.getLastAttendDate())) {
+        if (!today.equals(member.getLastAttendDate()) || member.getAttendedDays().charAt(index) == '0') {
             // 마지막 출석일과 오늘 날짜 차이 확인
             if (member.getLastAttendDate() != null && member.getLastAttendDate().plusDays(1).equals(today)) {
                 // 어제도 출석했으면 연속 출석 +1
