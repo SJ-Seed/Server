@@ -50,7 +50,13 @@ public class PlantService {
                 () -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND, plant.getSpecies().getId())
         );
 
-        long daySinceWatered = ChronoUnit.DAYS.between(plant.getWateredDate(), LocalDate.now());
+        long daySinceWatered;
+
+        if (plant.getWateredDate() != null) {
+            daySinceWatered = ChronoUnit.DAYS.between(plant.getWateredDate(), LocalDate.now());
+        } else {
+            return true;
+        }
 
         return daySinceWatered >= species.getPeriod();
     }
@@ -62,6 +68,7 @@ public class PlantService {
         );
 
         PlantData data = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plant.getPlantId());
+        plant.setWateredDate(LocalDate.now());
         return Integer.parseInt(data.getSoilWater()) <= 450;
     }
 }
