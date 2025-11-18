@@ -92,7 +92,7 @@ public class MemberService {
 
         return plants.stream().map(
                 plant -> PlantMainDto.of(
-                        plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater(), plant.getSpecies().getId())
+                        plant.getId(), plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater(), plant.getSpecies().getId())
         ).collect(Collectors.toList());
     }
 
