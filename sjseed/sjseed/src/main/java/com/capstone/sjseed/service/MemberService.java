@@ -169,7 +169,7 @@ public class MemberService {
 
         return plants.stream().map(
                 plant -> PlantListDto.of(
-                        plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName(), plant.getSpecies().getId()
+                        plant.getId(), plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName(), plant.getSpecies().getId()
                 )
         ).collect(Collectors.toList());
     }
