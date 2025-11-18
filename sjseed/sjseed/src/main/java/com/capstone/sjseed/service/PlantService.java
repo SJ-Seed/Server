@@ -3,8 +3,10 @@ package com.capstone.sjseed.service;
 import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.domain.PlantData;
 import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.PlantDetailDto;
+import com.capstone.sjseed.repository.PlantDataRepository;
 import com.capstone.sjseed.repository.PlantRepository;
 import com.capstone.sjseed.repository.PlantSpeciesRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +23,7 @@ public class PlantService {
 
     private final PlantRepository plantRepository;
     private final PlantSpeciesRepository  plantSpeciesRepository;
+    private final PlantDataRepository plantDataRepository;
 
     @Transactional(readOnly = true)
     public PlantDetailDto getPlantDetail(Long plantId) {
@@ -50,5 +53,15 @@ public class PlantService {
         long daySinceWatered = ChronoUnit.DAYS.between(plant.getWateredDate(), LocalDate.now());
 
         return daySinceWatered >= species.getPeriod();
+    }
+
+    @Transactional
+    public boolean ifWatered(Long plantId) {
+        Plant plant = plantRepository.findById(plantId).orElseThrow(
+                () -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND, plantId)
+        );
+
+        PlantData data = plantDataRepository.findTopByPlantIdOrderByCreatedAtDesc(plant.getPlantId());
+        return Integer.parseInt(data.getSoilWater()) <= 450;
     }
 }
