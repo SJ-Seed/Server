@@ -4,10 +4,7 @@ import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.*;
-import com.capstone.sjseed.dto.PlantStatusDto;
-import com.capstone.sjseed.dto.TreatmentListDto;
-import com.capstone.sjseed.dto.TreatmentRequestDto;
-import com.capstone.sjseed.dto.TreatmentResponseDto;
+import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.MemberRepository;
 import com.capstone.sjseed.repository.PlantDataRepository;
 import com.capstone.sjseed.repository.PlantRepository;
@@ -97,7 +94,7 @@ public class HospitalService {
 
 
     @Transactional
-    public TreatmentResponseDto treat(String url, Long memberId, Long plantId) {
+    public TreatmentResponseDto treat(ImageUrlDto imageUrlDto, Long memberId, Long plantId) {
         Member member = memberRepository.findById(memberId).orElseThrow(
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
@@ -112,7 +109,7 @@ public class HospitalService {
         // "최고 습도: 85%, 최저 습도: 75%, 최근 습도: 85%, 평균 습도: 80%"
         String hum = "최고 습도: " + status.maxHum() + "%, 최저 습도: " + status.minHum() + "%, 최근 습도: " + status.lastHum() + "%, 평균 습도: " + status.avgHum() + "%";
 
-        TreatmentRequestDto requestDto = TreatmentRequestDto.of(url, temp, hum);
+        TreatmentRequestDto requestDto = TreatmentRequestDto.of(imageUrlDto.url(), temp, hum);
 
         TreatmentResponseDto dto = analyzer.post()
                 .uri("/analyze")
