@@ -5,9 +5,11 @@ import java.time.LocalDate;
 public record TreatmentListDto(
         String plantName,
         LocalDate date,
-        String disease
+        String disease,
+        Long plantId,
+        Long speciesId
 ) {
-    public static TreatmentListDto of(String plantName, LocalDate date, String disease) {
-        return new TreatmentListDto(plantName, date, disease);
+    public static TreatmentListDto of(String plantName, LocalDate date, String disease, Long plantId, Long speciesId) {
+        return new TreatmentListDto(plantName, date, disease, plantId, speciesId);
     }
 }

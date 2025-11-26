@@ -39,7 +39,9 @@ public class HospitalService {
                 treatment -> TreatmentListDto.of(
                         treatment.getPlant().getName(),
                         treatment.getDate(),
-                        treatment.getDisease())
+                        treatment.getDisease(),
+                        treatment.getPlant().getId(),
+                        treatment.getPlant().getSpecies().getId())
         ).collect(Collectors.toList());
     }
 
