@@ -2,6 +2,7 @@ package com.capstone.sjseed.service;
 
 import com.capstone.sjseed.apiPayload.exception.handler.MemberHandler;
 import com.capstone.sjseed.apiPayload.exception.handler.PlantHandler;
+import com.capstone.sjseed.apiPayload.exception.handler.TreatmentHandler;
 import com.capstone.sjseed.apiPayload.form.status.ErrorStatus;
 import com.capstone.sjseed.domain.*;
 import com.capstone.sjseed.dto.*;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -124,10 +124,22 @@ public class HospitalService {
         Treatment treatment = Treatment.builder()
                 .member(member)
                 .disease(dto.state())
+                .explain(dto.explain())
+                .cause(dto.cause())
+                .cure(dto.cure())
                 .plant(plant)
                 .build();
         treatmentRepository.save(treatment);
 
         return dto;
+    }
+
+    @Transactional(readOnly = true)
+    public TreatmentDetailDto getTreatmentDetail(Long treatmentId) {
+        Treatment treatment = treatmentRepository.findById(treatmentId).orElseThrow(
+                () -> new TreatmentHandler(ErrorStatus.TREATMENT_NOT_FOUND, treatmentId)
+        );
+
+        return TreatmentDetailDto.of(treatment.getPlant().getId(), treatment.getPlant().getSpecies().getId(), treatment.getDisease(), treatment.getSymptoms(), treatment.getCause(), treatment.getCure());
     }
 }

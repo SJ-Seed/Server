@@ -1,10 +1,7 @@
 package com.capstone.sjseed.controller;
 
 import com.capstone.sjseed.apiPayload.ApiResponse;
-import com.capstone.sjseed.dto.ImageUrlDto;
-import com.capstone.sjseed.dto.TreatmentListDto;
-import com.capstone.sjseed.dto.TreatmentRequestDto;
-import com.capstone.sjseed.dto.TreatmentResponseDto;
+import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.service.HospitalService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -29,5 +26,11 @@ public class HospitalController {
     @PostMapping("/treat/{memberId}/{plantId}")
     public ResponseEntity<ApiResponse<TreatmentResponseDto>> analyze(@RequestBody ImageUrlDto dto , @PathVariable Long memberId, @PathVariable Long plantId) {
         return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.treat(dto, memberId, plantId)));
+    }
+
+    @Operation(summary = "진료 기록 상세 보기", description = "질병이 기록된 진료 기록 상세 정보를 조회합니다.")
+    @GetMapping("/treatment/{treatmentId}")
+    public ResponseEntity<ApiResponse<TreatmentDetailDto>> getTreatment(@PathVariable Long treatmentId) {
+        return ResponseEntity.ok(ApiResponse.onSuccess(hospitalService.getTreatmentDetail(treatmentId)));
     }
 }

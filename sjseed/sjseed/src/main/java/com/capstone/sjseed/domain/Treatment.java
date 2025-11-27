@@ -26,14 +26,23 @@ public class Treatment {
 
     private String disease;
 
+    private String symptoms;
+
+    private String cause;
+
+    private String cure;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Plant plant;
 
     @Builder
-    public Treatment(Member member, String disease, Plant plant) {
+    public Treatment(Member member, String disease, String explain, String cause, String cure, Plant plant) {
         this.member = member;
         this.date = LocalDate.now();
         this.disease = disease;
+        this.symptoms = explain;
+        this.cause = cause;
+        this.cure = cure;
         this.plant = plant;
     }
 }
