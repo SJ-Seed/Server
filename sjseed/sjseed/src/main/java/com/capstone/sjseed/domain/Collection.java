@@ -1,10 +1,7 @@
 package com.capstone.sjseed.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.util.ArrayList;
@@ -20,6 +17,7 @@ public class Collection extends BaseEntity{
 
     @Column(nullable = false)
     @ColumnDefault("0.0")
+    @Setter
     private double complete;
 
     @Builder
@@ -31,6 +29,7 @@ public class Collection extends BaseEntity{
     private List<Piece> pieces = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
+    @Setter
     private Member member;
 
     public void addPiece(Piece piece) {

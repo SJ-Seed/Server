@@ -8,10 +8,7 @@ import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
 import com.capstone.sjseed.dto.*;
-import com.capstone.sjseed.repository.MemberRepository;
-import com.capstone.sjseed.repository.PieceRepository;
-import com.capstone.sjseed.repository.PlantRepository;
-import com.capstone.sjseed.repository.PlantSpeciesRepository;
+import com.capstone.sjseed.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +25,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PlantSpeciesRepository plantSpeciesRepository;
+    private final CollectionRepository collectionRepository;
     private final PlantRepository plantRepository;
     private final PieceRepository pieceRepository;
     private final JwtProvider jwtProvider;
@@ -51,6 +48,8 @@ public class MemberService {
                 .collection(collection)
                 .build();
 
+        collection.setMember(member);
+        collectionRepository.save(collection);
         memberRepository.save(member);
 
         return SignUpResponseDto.of(

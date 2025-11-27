@@ -19,7 +19,8 @@ public class Piece {
     @Column(nullable = false)
     private LocalDate date;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "species_id", nullable = false)
     private PlantSpecies species;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -92,7 +92,8 @@ public class CollectionService {
 
             if (!pieceRepository.existsByCollectionAndSpecies(member.getCollection(), species)) {
                 member.getCollection().addPiece(piece);
-
+                long count = pieceRepository.countByMemberId(member.getId());
+                member.getCollection().setComplete((double) count /12);
                 pieceRepository.save(piece);
             }
 
