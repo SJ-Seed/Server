@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -130,6 +131,15 @@ public class HospitalService {
                 .plant(plant)
                 .build();
         treatmentRepository.save(treatment);
+
+        if (dto.state() == null) {
+            Optional<Treatment> lastTreatment = treatmentRepository.findTopByMemberAndPlantOrderByDateDesc(member, plant);
+            if (lastTreatment.isPresent()) {
+                if (lastTreatment.get().getDisease() != null) {
+                    member.setCoin(member.getCoin() + 100);
+                }
+            }
+        }
 
         return dto;
     }
