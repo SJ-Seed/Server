@@ -85,15 +85,16 @@ public class CollectionService {
 
         if (name != null && plantSpeciesRepository.existsByName(name)) {
             PlantSpecies species = plantSpeciesRepository.findByName(name);
-
             Piece piece = Piece.builder()
                     .species(species)
                     .collection(member.getCollection())
                     .build();
 
-            member.getCollection().addPiece(piece);
+            if (!pieceRepository.existsByCollectionAndSpecies(member.getCollection(), species)) {
+                member.getCollection().addPiece(piece);
 
-            pieceRepository.save(piece);
+                pieceRepository.save(piece);
+            }
 
             return RandomResultDto.of(true, name, piece.getId());
         }
