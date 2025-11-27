@@ -7,7 +7,6 @@ import com.capstone.sjseed.config.JwtProvider;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
-import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.MemberRepository;
 import com.capstone.sjseed.repository.PieceRepository;
@@ -192,7 +191,7 @@ public class MemberService {
 
         if (plantRepository.findByName(name).isPresent()) {
             if (plantRepository.findByName(name).get().getMember().getId().equals(member.getId())) {
-                throw new PlantHandler(ErrorStatus.DUPLICEATED_NAME, name);
+                throw new PlantHandler(ErrorStatus.DUPLICATED_NAME, name);
             }
         }
 
