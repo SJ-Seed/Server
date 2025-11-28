@@ -200,6 +200,8 @@ public class MemberService {
                 .plantId(code)
                 .build();
 
+        plantRepository.save(plant);
+
         return PlantResponseDto.of(
                 plant.getId(), plant.getName(), plant.getBroughtDate(), plant.getMember().getId()
         );
