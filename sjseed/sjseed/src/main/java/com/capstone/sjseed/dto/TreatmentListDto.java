@@ -7,9 +7,10 @@ public record TreatmentListDto(
         LocalDate date,
         String disease,
         Long plantId,
-        Long speciesId
+        Long speciesId,
+        Long treatmentId
 ) {
-    public static TreatmentListDto of(String plantName, LocalDate date, String disease, Long plantId, Long speciesId) {
-        return new TreatmentListDto(plantName, date, disease, plantId, speciesId);
+    public static TreatmentListDto of(String plantName, LocalDate date, String disease, Long plantId, Long speciesId, Long treatmentId) {
+        return new TreatmentListDto(plantName, date, disease, plantId, speciesId, treatmentId);
     }
 }

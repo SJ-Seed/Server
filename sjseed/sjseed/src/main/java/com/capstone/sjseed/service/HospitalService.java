@@ -42,7 +42,8 @@ public class HospitalService {
                         treatment.getDate(),
                         treatment.getDisease(),
                         treatment.getPlant().getId(),
-                        treatment.getPlant().getSpecies().getId())
+                        treatment.getPlant().getSpecies().getId(),
+                        treatment.getId())
         ).collect(Collectors.toList());
     }
 
