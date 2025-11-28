@@ -90,7 +90,13 @@ public class MemberService {
 
         return plants.stream().map(
                 plant -> PlantMainDto.of(
-                        plant.getId(), plant.getName(), plant.getTemperature(), plant.getHumidity(), plant.getSoilWater(), plant.getSpecies().getId())
+                        plant.getId(),
+                        plant.getName(),
+                        plant.getTemperature(),
+                        plant.getHumidity(),
+                        plant.getSoilWater(),
+                        plant.getSpecies() != null ? plant.getSpecies().getId() : null
+                )
         ).collect(Collectors.toList());
     }
 
@@ -175,11 +181,16 @@ public class MemberService {
 
         List<Plant> plants = member.getPlants();
 
-        return plants.stream().map(
-                plant -> PlantListDto.of(
-                        plant.getId(), plant.getName(), plant.getBroughtDate(), plant.isDiseased(), plant.getSpecies().getName(), plant.getSpecies().getId()
-                )
-        ).collect(Collectors.toList());
+        return plants.stream()
+                .map(plant -> PlantListDto.of(
+                        plant.getId(),
+                        plant.getName(),
+                        plant.getBroughtDate(),
+                        plant.isDiseased(),
+                        plant.getSpecies() != null ? plant.getSpecies().getName() : null,
+                        plant.getSpecies() != null ? plant.getSpecies().getId() : null
+                ))
+                .collect(Collectors.toList());
     }
 
     @Transactional
