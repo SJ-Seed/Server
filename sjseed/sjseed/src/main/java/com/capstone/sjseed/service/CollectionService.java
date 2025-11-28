@@ -94,13 +94,14 @@ public class CollectionService {
                 member.getCollection().addPiece(piece);
                 long count = pieceRepository.countByMemberId(member.getId());
                 member.getCollection().setComplete((double) count / 12);
-                member.setCoin(member.getCoin() - 100);
+                member.setCoin(member.getCoin() - 1000);
                 pieceRepository.save(piece);
             }
 
             return RandomResultDto.of(true, name, piece.getId());
         }
 
+        member.setCoin(member.getCoin() - 1000);
         return RandomResultDto.of(false, null, null);
     }
 
