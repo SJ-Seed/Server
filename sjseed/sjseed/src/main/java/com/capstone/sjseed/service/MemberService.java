@@ -7,6 +7,7 @@ import com.capstone.sjseed.config.JwtProvider;
 import com.capstone.sjseed.domain.Collection;
 import com.capstone.sjseed.domain.Member;
 import com.capstone.sjseed.domain.Plant;
+import com.capstone.sjseed.domain.PlantSpecies;
 import com.capstone.sjseed.dto.*;
 import com.capstone.sjseed.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +30,7 @@ public class MemberService {
     private final PlantRepository plantRepository;
     private final PieceRepository pieceRepository;
     private final JwtProvider jwtProvider;
+    private final PlantSpeciesRepository plantSpeciesRepository;
 
     @Transactional
     public SignUpResponseDto signUp(SignUpRequestDto signupDto) {
@@ -205,10 +207,13 @@ public class MemberService {
             }
         }
 
+        PlantSpecies species = plantSpeciesRepository.findById(5L).orElseThrow();
+
         Plant plant = Plant.builder()
                 .name(name)
                 .member(member)
                 .plantId(code)
+                .species(species)
                 .build();
 
         plantRepository.save(plant);

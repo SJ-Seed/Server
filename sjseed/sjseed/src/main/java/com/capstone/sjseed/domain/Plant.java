@@ -38,12 +38,13 @@ public class Plant {
     private String plantId;
 
     @Builder
-    public Plant(String name, String plantId, Member member) {
+    public Plant(String name, String plantId, Member member, PlantSpecies species) {
         this.name = name;
         this.member = member;
         this.broughtDate = LocalDate.now();
         this.plantId = plantId;
         this.diseased = false;
+        this.species = species;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
