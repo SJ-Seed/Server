@@ -40,11 +40,6 @@ public class PlantDataService {
 //             log.info("✅ lastData found for plantId: {}", lastData.getPlantId());
 //             log.info("createdAt: {}", lastData.getCreatedAt());
 //        }
-        if (lastData != null){
-            if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() < 60) {
-                return;
-            }
-        }
 
         plantDataRepository.save(plantData);
 
@@ -62,6 +57,12 @@ public class PlantDataService {
                 plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
                 plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
                 plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
+
+                if (lastData != null){
+                    if (Duration.between(lastData.getCreatedAt(), LocalDateTime.now()).toMinutes() < 60) {
+                        return;
+                    }
+                }
 
                 plantRepository.save(plant);
             }
