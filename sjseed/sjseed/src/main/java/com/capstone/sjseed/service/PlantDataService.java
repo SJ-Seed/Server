@@ -53,6 +53,7 @@ public class PlantDataService {
 
                 if (plant.getSpecies() == null) {
                     plant.setSpecies(plantSpecies);
+                    plantRepository.save(plant);
                 }
                 plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
                 plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
