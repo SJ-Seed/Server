@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 
 @Service
@@ -46,25 +48,24 @@ public class PlantDataService {
 
         plantDataRepository.save(plantData);
 
-        if (plantRepository.findByPlantId(plantData.getPlantId()).isPresent()){
-            Plant plant = plantRepository.findByPlantId(plantData.getPlantId())
-                    .orElseThrow(() -> new PlantHandler(ErrorStatus.PLANT_NOT_FOUND)
-                    );
+        if (!plantRepository.findByPlantId(plantData.getPlantId()).isEmpty()){
+            List<Plant> plantList = plantRepository.findByPlantId(plantData.getPlantId());
 
-            PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
-                    .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
-                    );
+            for (Plant plant : plantList){
+                PlantSpecies plantSpecies = plantSpeciesRepository.findByCode(plantData.getKind())
+                        .orElseThrow(() -> new PlantHandler(ErrorStatus.SPECIES_NOT_FOUND)
+                        );
 
-            if (plant.getSpecies() == null) {
-                plant.setSpecies(plantSpecies);
+                if (plant.getSpecies() == null) {
+                    plant.setSpecies(plantSpecies);
+                }
+                plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
+                plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
+                plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
+
+                plantRepository.save(plant);
             }
-            plant.setHumidity(Double.parseDouble(plantData.getHumidity()));
-            plant.setTemperature(Double.parseDouble(plantData.getTemperature()));
-            plant.setSoilWater(Double.parseDouble(plantData.getSoilWater()));
-
-            plantRepository.save(plant);
         }
-
     }
 
     // 매일 새벽 3시에 실행
