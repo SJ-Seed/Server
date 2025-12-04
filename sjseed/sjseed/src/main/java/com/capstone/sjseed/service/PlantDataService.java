@@ -41,8 +41,6 @@ public class PlantDataService {
 //             log.info("createdAt: {}", lastData.getCreatedAt());
 //        }
 
-        plantDataRepository.save(plantData);
-
         if (!plantRepository.findByPlantId(plantData.getPlantId()).isEmpty()){
             List<Plant> plantList = plantRepository.findByPlantId(plantData.getPlantId());
 
@@ -68,6 +66,8 @@ public class PlantDataService {
                 plantRepository.save(plant);
             }
         }
+
+        plantDataRepository.save(plantData);
     }
 
     // 매일 새벽 3시에 실행
