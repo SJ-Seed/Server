@@ -32,17 +32,20 @@ public class Treatment {
 
     private String cure;
 
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Plant plant;
 
     @Builder
-    public Treatment(Member member, String disease, String explain, String cause, String cure, Plant plant) {
+    public Treatment(Member member, String disease, String explain, String cause, String cure, String imageUrl, Plant plant) {
         this.member = member;
         this.date = LocalDate.now();
         this.disease = disease;
         this.symptoms = explain;
         this.cause = cause;
         this.cure = cure;
+        this.imageUrl = imageUrl;
         this.plant = plant;
     }
 }

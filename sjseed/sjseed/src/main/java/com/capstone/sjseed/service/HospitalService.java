@@ -129,6 +129,7 @@ public class HospitalService {
                 .explain(dto.explain())
                 .cause(dto.cause())
                 .cure(dto.cure())
+                .imageUrl(imageUrlDto.url())
                 .plant(plant)
                 .build();
         treatmentRepository.save(treatment);
@@ -151,6 +152,6 @@ public class HospitalService {
                 () -> new TreatmentHandler(ErrorStatus.TREATMENT_NOT_FOUND, treatmentId)
         );
 
-        return TreatmentDetailDto.of(treatment.getPlant().getId(), treatment.getPlant().getSpecies().getId(), treatment.getDisease(), treatment.getSymptoms(), treatment.getCause(), treatment.getCure());
+        return TreatmentDetailDto.of(treatment.getPlant().getId(), treatment.getPlant().getSpecies().getId(), treatment.getDisease(), treatment.getSymptoms(), treatment.getCause(), treatment.getCure(), treatment.getImageUrl());
     }
 }

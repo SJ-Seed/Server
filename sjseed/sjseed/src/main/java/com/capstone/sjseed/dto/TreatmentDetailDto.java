@@ -6,9 +6,10 @@ public record TreatmentDetailDto(
         String disease,
         String explain,
         String cause,
-        String cure
+        String cure,
+        String imageUrl
 ) {
-    public static TreatmentDetailDto of(Long plantId, Long speciesId, String disease, String explain, String cause, String cure) {
-        return new TreatmentDetailDto(plantId, speciesId, disease, explain, cause, cure);
+    public static TreatmentDetailDto of(Long plantId, Long speciesId, String disease, String explain, String cause, String cure, String imageUrl) {
+        return new TreatmentDetailDto(plantId, speciesId, disease, explain, cause, cure, imageUrl);
     }
 }

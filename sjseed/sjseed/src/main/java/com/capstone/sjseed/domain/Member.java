@@ -66,7 +66,7 @@ public class Member extends BaseEntity{
         this.loginId = loginId;
         this.password = password;
         this.phoneNumber = phoneNumber;
-        this.coin = 0;
+        this.coin = 10000;
         this.attendedDays = "0000000";
         this.lastAttendDate = LocalDate.now();
         this.premium = false;
