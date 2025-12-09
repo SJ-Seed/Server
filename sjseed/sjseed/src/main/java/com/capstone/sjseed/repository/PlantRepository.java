@@ -10,7 +10,9 @@ import java.util.Optional;
 public interface PlantRepository extends JpaRepository<Plant, Long> {
     List<Plant> findByPlantId(String plantId);
 
-    Optional<Plant> findByName(String name);
+    List<Plant> findByName(String name);
 
     long countByMember(Member member);
+
+    boolean existsByNameAndMember(String name, Member member);
 }

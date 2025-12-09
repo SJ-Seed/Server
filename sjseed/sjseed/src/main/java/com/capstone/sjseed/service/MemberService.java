@@ -201,8 +201,8 @@ public class MemberService {
                 () -> new MemberHandler(ErrorStatus.MEMBER_NOT_FOUND, memberId)
         );
 
-        if (plantRepository.findByName(name).isPresent()) {
-            if (plantRepository.findByName(name).get().getMember().getId().equals(member.getId())) {
+        if (!plantRepository.findByName(name).isEmpty()) {
+            if (plantRepository.existsByNameAndMember(name, member)) {
                 throw new PlantHandler(ErrorStatus.DUPLICATED_NAME, name);
             }
         }
