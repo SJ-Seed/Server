@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -123,6 +124,10 @@ public class HospitalService {
                 .bodyToMono(TreatmentResponseDto.class)
                 .block(); // 동기 처리 (필요시 비동기로도 가능)
 
+        if (dto.state() == null) {
+            return dto;
+        }
+
         Treatment treatment = Treatment.builder()
                 .member(member)
                 .disease(dto.state())
@@ -134,7 +139,7 @@ public class HospitalService {
                 .build();
         treatmentRepository.save(treatment);
 
-        if (dto.state() == null) {
+        if (Objects.equals(dto.state(), "정상")) {
             Optional<Treatment> lastTreatment = treatmentRepository.findTopByMemberAndPlantOrderByDateDesc(member, plant);
             if (lastTreatment.isPresent()) {
                 if (lastTreatment.get().getDisease() != null) {
